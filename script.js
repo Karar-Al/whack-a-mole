@@ -1,24 +1,27 @@
 class Game {
   SPEED = 2000
 
+  currentHoleID = null
+  currentTime = 5
+  molesWhacked = 0
+  hits = 0
+
+  gameLoopInterval = setInterval(() => this.popUp(), this.SPEED)
+  timerInterval = setInterval(() => this.updateTime(), 1000)
+
+  holes = document.querySelectorAll('[data-id]')
+  molesWhackedEl = document.querySelector('.molesWhacked b')
+  timeLeftEl = document.querySelector('.timeLeft b')
+
   constructor(onGameOver) {
-    this.gameLoopInterval = setInterval(() => this.popUp(), this.SPEED)
-    this.timerInterval = setInterval(() => this.updateTime(), 1000)
+    this.onGameOver = onGameOver
+    
+    this.timeLeftEl.innerText = this.currentTime + 's'
+    this.molesWhackedEl.innerText = this.molesWhacked
 
-    this.currentHoleID = null
-    this.currentTime = 60
-    this.molesWhacked = 0
-    this.hits = 0
-
-    this.holes = document.querySelectorAll('[data-id]')
     this.holes.forEach((hole) => {
       hole.addEventListener('click', () => this.whack(hole))
     })
-
-    this.molesWhackedEl = document.querySelector('.molesWhacked b')
-    this.timeLeftEl = document.querySelector('.timeLeft b')
-
-    this.onGameOver = onGameOver
   }
 
   whack(hole) {
