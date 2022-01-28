@@ -30,7 +30,7 @@ let Game = {
   },
 
   // *
-  removeAllMoles () {
+  removeAllMoles() {
     this.currentHoleID = null
     holes.forEach((hole) => hole.classList.remove('mole'))
   },
@@ -44,7 +44,7 @@ let Game = {
       this.classList.remove('mole', 'hit')
 
       // Animationend fadeBack
-      this.onanimationend = () => {
+      this.onanimationend = function () {
         this.classList.remove('fadeBack')
         this.onanimationend = null
       }
@@ -76,14 +76,14 @@ let Game = {
     this.animateAMole(this.currentHoleID)
   },
 
-  updateScore () {
+  updateScore() {
     this.molesWhacked++
 
     document.querySelector('.molesWhacked b').innerText = this.molesWhacked
   },
 
   // *
-  updateTime () {
+  updateTime() {
     this.currentTime--
 
     document.querySelector('.timeLeft b').innerText = this.currentTime + 's'
@@ -115,12 +115,12 @@ holes.forEach((hole) => {
   hole.addEventListener('click', () => Game.whack(hole))
 })
 
-function gameLoop () {
+function gameLoop() {
   // Mullvad ska bli synlig.
   Game.popUp()
 }
 
-function timer () {
+function timer() {
   // Här ska vi räkna ner tiden.
   Game.updateTime()
 }
