@@ -2,8 +2,8 @@ class Game {
   SPEED = 2000
 
   constructor(onGameOver) {
-    this.gameLoopInterval = setInterval(() => this.gameLoop(), this.SPEED)
-    this.timerInterval = setInterval(() => this.timer(), 1000)
+    this.gameLoopInterval = setInterval(() => this.popUp(), this.SPEED)
+    this.timerInterval = setInterval(() => this.updateTime(), 1000)
 
     this.currentHoleID = null
     this.currentTime = 60
@@ -93,16 +93,6 @@ class Game {
     clearInterval(this.gameLoopInterval)
 
     this.onGameOver()
-  }
-
-  gameLoop() {
-    // Mullvad ska bli synlig.
-    this.popUp()
-  }
-
-  timer() {
-    // Här ska vi räkna ner tiden.
-    this.updateTime()
   }
 }
 
