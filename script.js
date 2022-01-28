@@ -88,25 +88,26 @@ let Game = {
 
     document.querySelector('.timeLeft b').innerText = this.currentTime + 's'
 
-    if (this.currentTime <= 0) {
-      // Game over
-      this.removeAllMoles()
+    if (this.currentTime > 0) return // Time's not up yet!
 
-      clearInterval(timerInterval)
-      clearInterval(gameLoopInterval)
+    // Game over!
+    this.removeAllMoles()
 
-      // GG!
-      alert(`Time's out! You whacked ${this.molesWhacked} moles in ${this.hits} hits.`)
+    clearInterval(timerInterval)
+    clearInterval(gameLoopInterval)
 
-      // Go again?
-      const goAgainBool = confirm('Go again?')
+    // GG!
+    alert(`Time's out! You whacked ${this.molesWhacked} moles in ${this.hits} hits.`)
 
-      if (goAgainBool) {
-        Game = { ...Game, ..._Game }
-        timerInterval = setInterval(timer, 1000)
-        gameLoopInterval = setInterval(gameLoop, SPEED)
-      }
-    }
+    // Go again?
+    const goAgainBool = confirm('Go again?')
+
+    if (!goAgainBool) return // We're done here!
+
+    // Create a new game!
+    Game = { ...Game, ..._Game }
+    timerInterval = setInterval(timer, 1000)
+    gameLoopInterval = setInterval(gameLoop, SPEED)
   }
 }
 
