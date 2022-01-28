@@ -22,16 +22,8 @@ class Game {
     this.molesWhackedEl.innerText = this.molesWhacked
 
     this.holes.forEach((hole) => {
-      hole.addEventListener('click', () => this.whack(hole))
+      hole.addEventListener('click', () => this.evalWhack(hole))
     })
-  }
-
-  whack(hole) {
-    let whackedHoleID = hole.dataset.id
-
-    this.hits++
-
-    return this.evalWhack(whackedHoleID)
   }
 
   removeAllMoles() {
@@ -39,14 +31,14 @@ class Game {
     this.holes.forEach((hole) => hole.classList.remove('mole'))
   }
 
-  animateAMole(holeID) {
-    const el = document.querySelector(`[data-id="${holeID}"`)
+  animateTheMole() {
+    const holeEl = document.querySelector(`[data-id="${this.currentHoleID}"`)
 
-    // Animationend hit
-    el.onanimationend = function () {
+    // animationend hit
+    holeEl.onanimationend = function () {
       this.classList.remove('mole', 'hit')
 
-      // Animationend fadeBack
+      // animationend fadeBack
       this.onanimationend = function () {
         this.classList.remove('fadeBack')
         this.onanimationend = null
@@ -55,27 +47,31 @@ class Game {
       this.classList.add('fadeBack')
     }
 
-    el.classList.add('hit')
+    holeEl.classList.add('hit')
     this.currentHoleID = null
   }
 
   popUp() {
     this.removeAllMoles()
 
-    let randomID = Math.floor(Math.random() * this.holes.length)
+    const randomID = Math.floor(Math.random() * this.holes.length)
 
     this.currentHoleID = randomID
 
-    let el = document.querySelector(`[data-id="${randomID}"]`)
-    el.classList.add('mole')
+    const holeEl = document.querySelector(`[data-id="${randomID}"]`)
+    holeEl.classList.add('mole')
   }
 
-  evalWhack(whackedHoleID) {
-    if (Number(whackedHoleID) !== this.currentHoleID) return
+  evalWhack(hole) {
+    const whackedHoleID = Number(hole.dataset.id)
+
+    this.hits++
+
+    if (whackedHoleID !== this.currentHoleID) return
 
     this.updateScore()
 
-    this.animateAMole(this.currentHoleID)
+    this.animateTheMole()
   }
 
   updateScore() {
