@@ -67,17 +67,13 @@ class Game {
 
     this.hits++
 
-    if (whackedHoleID !== this.currentHoleID) return
+    if (whackedHoleID !== this.currentHoleID) return // Hit something but no cigar!
 
-    this.updateScore()
+    // Target acquired.
+    this.molesWhacked++
+    this.molesWhackedEl.innerText = this.molesWhacked
 
     this.animateTheMole()
-  }
-
-  updateScore() {
-    this.molesWhacked++
-
-    this.molesWhackedEl.innerText = this.molesWhacked
   }
 
   updateTime() {
