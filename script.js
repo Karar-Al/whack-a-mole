@@ -1,8 +1,10 @@
 class Game {
+  // Public Class Field Declarations - Stage 4 TC39
+  // Support: https://github.com/tc39/proposal-class-fields#implementations
   SPEED = 2000
 
   currentHoleID = null
-  currentTime = 5
+  currentTime = 60
   molesWhacked = 0
   hits = 0
 
