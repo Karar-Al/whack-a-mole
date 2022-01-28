@@ -1,41 +1,39 @@
-// Globala variabler
-let SPEED = 2000
+class Game {
+  SPEED = 2000
 
-let gameLoopInterval = setInterval(gameLoop, SPEED)
-let timerInterval = setInterval(timer, 1000)
+  constructor(onGameOver) {
+    this.gameLoopInterval = setInterval(() => this.gameLoop(), this.SPEED)
+    this.timerInterval = setInterval(() => this.timer(), 1000)
 
-const holes = document.querySelectorAll('[data-id]')
+    this.currentHoleID = null
+    this.currentTime = 60
+    this.molesWhacked = 0
+    this.hits = 0
 
-// Ett object med default värden.
-let _Game = {
-  currentHole: null,
-  currentTime: 60,
-  molesWhacked: 0,
-  hits: 0,
-}
+    this.holes = document.querySelectorAll('[data-id]')
+    this.holes.forEach((hole) => {
+      hole.addEventListener('click', () => this.whack(hole))
+    })
 
-let Game = {
-  currentHoleID: _Game.currentHole, // *
-  currentTime: _Game.currentTime, // *
-  molesWhacked: _Game.molesWhacked, // *
-  hits: _Game.hits, // *
+    this.molesWhackedEl = document.querySelector('.molesWhacked b')
+    this.timeLeftEl = document.querySelector('.timeLeft b')
 
-  // *
+    this.onGameOver = onGameOver
+  }
+
   whack(hole) {
     let whackedHoleID = hole.dataset.id
 
     this.hits++
 
     return this.evalWhack(whackedHoleID)
-  },
+  }
 
-  // *
   removeAllMoles() {
     this.currentHoleID = null
-    holes.forEach((hole) => hole.classList.remove('mole'))
-  },
+    this.holes.forEach((hole) => hole.classList.remove('mole'))
+  }
 
-  // *
   animateAMole(holeID) {
     const el = document.querySelector(`[data-id="${holeID}"`)
 
@@ -54,74 +52,70 @@ let Game = {
 
     el.classList.add('hit')
     this.currentHoleID = null
-  },
+  }
 
   popUp() {
     this.removeAllMoles()
 
-    let randomID = Math.floor(Math.random() * holes.length)
+    let randomID = Math.floor(Math.random() * this.holes.length)
 
     this.currentHoleID = randomID
 
     let el = document.querySelector(`[data-id="${randomID}"]`)
     el.classList.add('mole')
-  },
+  }
 
-  // *
   evalWhack(whackedHoleID) {
     if (Number(whackedHoleID) !== this.currentHoleID) return
 
     this.updateScore()
 
     this.animateAMole(this.currentHoleID)
-  },
+  }
 
   updateScore() {
     this.molesWhacked++
 
-    document.querySelector('.molesWhacked b').innerText = this.molesWhacked
-  },
+    this.molesWhackedEl.innerText = this.molesWhacked
+  }
 
-  // *
   updateTime() {
     this.currentTime--
 
-    document.querySelector('.timeLeft b').innerText = this.currentTime + 's'
+    this.timeLeftEl.innerText = this.currentTime + 's'
 
     if (this.currentTime > 0) return // Time's not up yet!
 
     // Game over!
     this.removeAllMoles()
 
-    clearInterval(timerInterval)
-    clearInterval(gameLoopInterval)
+    clearInterval(this.timerInterval)
+    clearInterval(this.gameLoopInterval)
 
-    // GG!
-    alert(`Time's out! You whacked ${this.molesWhacked} moles in ${this.hits} hits.`)
+    this.onGameOver()
+  }
 
-    // Go again?
-    const goAgainBool = confirm('Go again?')
+  gameLoop() {
+    // Mullvad ska bli synlig.
+    this.popUp()
+  }
 
-    if (!goAgainBool) return // We're done here!
-
-    // Create a new game!
-    Game = { ...Game, ..._Game }
-    timerInterval = setInterval(timer, 1000)
-    gameLoopInterval = setInterval(gameLoop, SPEED)
+  timer() {
+    // Här ska vi räkna ner tiden.
+    this.updateTime()
   }
 }
 
-// *
-holes.forEach((hole) => {
-  hole.addEventListener('click', () => Game.whack(hole))
-})
+let game = new Game(onGameOver)
 
-function gameLoop() {
-  // Mullvad ska bli synlig.
-  Game.popUp()
-}
+function onGameOver () {
+  alert(`Time's out! You whacked ${game.molesWhacked} moles in ${game.hits} hits.`)
 
-function timer() {
-  // Här ska vi räkna ner tiden.
-  Game.updateTime()
+  // Go again?
+  const goAgainBool = confirm('Go again?')
+
+  if (!goAgainBool) return // We're done here!
+
+  // New game!
+  game = new Game(onGameOver)
 }
